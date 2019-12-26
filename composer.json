@@ -1,0 +1,25 @@
+{
+    "name": "kialex/yii2-translation-center",
+    "description": "Transaltion Center for Yii 2.0",
+    "homepage": "http://dev-api.translate.center/api-docs/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vladislav",
+            "email": "vladislav.dneprov1995@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "pervozdanniy/translation-storage": "dev-master",
+        "pervozdanniy/translation-client": "^1.0.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "Translate\\": "src/"
+        }
+    }
+}
