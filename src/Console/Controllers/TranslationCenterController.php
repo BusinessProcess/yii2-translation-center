@@ -12,7 +12,7 @@
 
 namespace Kialex\TranslateCenter\Console\Controllers;
 
-use Kialex\TranslationCenter\{Client, console\tracker\PullProgressTracker, storage\JsonFileStorage};
+use Kialex\TranslateCenter\{Client, Console\Tracker\PullProgressTracker, Storage\JsonFileStorage};
 use Translate\StorageManager\Manager;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -21,6 +21,15 @@ use yii\helpers\Console;
 
 class TranslationCenterController extends Controller
 {
+    /**
+     * List of lang code where is localy code and value is code in Translation Center
+     */
+    const LANG_CODE = [
+        'ru' => 'ru', // It is primary language!! Put your primary language first!!
+        'de' => 'de', 'en' => 'en', 'es' => 'es', 'gr' => 'el', 'il' => 'he', 'it' => 'it', 'lt' => 'lt', 'mn' => 'mn',
+        'pl' => 'pl', 'ar' => 'ar', 'sr' => 'sr', 'ua' => 'uk', 'zh' => 'zh', 'tr' => 'tr'
+    ];
+
     public $staticSources = ['static_1', 'static_2', 'static_3'];
     public $dynamicSources = ['dynamic_1', 'dynamic_2', 'dynamic_3'];
 
