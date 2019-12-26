@@ -2,7 +2,7 @@
     "name": "kialex/yii2-translation-center",
     "description": "Transaltion Center for Yii 2.0",
     "homepage": "http://dev-api.translate.center/api-docs/",
-    "type": "library",
+    "type": "yii2-extension",
     "license": "MIT",
     "authors": [
         {
@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Translate\\": "src/"
+            "Kialex\\TranslateCenter\\": "src/"
         }
     }
 }
