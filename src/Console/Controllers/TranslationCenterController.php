@@ -21,27 +21,6 @@ use yii\helpers\Console;
 
 class TranslationCenterController extends Controller
 {
-    /**
-     * List of lang code where is localy code and value is code in Translation Center
-     */
-    public $langCode = [
-        'ru' => 'ru', // It is primary language!! Put your primary language first!!
-        'de' => 'de',
-        'en' => 'en',
-        'es' => 'es',
-        'gr' => 'el',
-        'il' => 'he',
-        'it' => 'it',
-        'lt' => 'lt',
-        'mn' => 'mn',
-        'pl' => 'pl',
-        'ar' => 'ar',
-        'sr' => 'sr',
-        'ua' => 'uk',
-        'zh' => 'zh',
-        'tr' => 'tr'
-    ];
-
     public $staticSources = ['static_1', 'static_2', 'static_3'];
     public $dynamicSources = ['dynamic_1', 'dynamic_2', 'dynamic_3'];
 
@@ -67,36 +46,6 @@ class TranslationCenterController extends Controller
     public function actionPullDynamicSources()
     {
         return $this->pull($this->dynamicSources);
-    }
-
-    /**
-     * Push all local static content to Translation Center
-     * !!!!!!!!!!!!!!!!
-     * It is command should be executed once! In future this method will be deleted!
-     * !!!!!!!!!!!!!!!!
-     *
-     * @return int
-     * @throws InvalidConfigException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
-    public function actionPushStaticSources()
-    {
-        return $this->push($this->staticSources);
-    }
-
-    /**
-     * Push all dynamic content to Translation Center
-     * !!!!!!!!!!!!!!!!
-     * It is command should be executed once! In future this method will be deleted!
-     * !!!!!!!!!!!!!!!!
-     *
-     * @return int
-     * @throws InvalidConfigException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
-    public function actionPushDynamicSources()
-    {
-        return $this->push($this->staticSources);
     }
 
     /**
