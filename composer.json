@@ -11,6 +11,7 @@
             "role": "Developer"
         }
     ],
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "pervozdanniy/translation-storage": "dev-master",
