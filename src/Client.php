@@ -12,10 +12,8 @@
 
 namespace Kialex\TranslateCenter;
 
-use Translate\ApiClient;
-use Translate\Storage\ArrayStorage;
+use Translate\{ApiClient, Storage\ArrayStorage, StorageManager\Contracts\Api};
 use yii\base\{BaseObject};
-use Translate\StorageManager\Contracts\Api;
 
 /**
  * Class Client
@@ -80,22 +78,6 @@ class Client extends BaseObject implements Api
     }
 
     /**
-     * @param array $queryParams
-     * @return bool[]
-     *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceGetList
-     */
-    public function getTags($queryParams = [])
-    {
-        $response = $this->apiClient->request('GET', $this->transformUri('/projects/{projectUuid}/resource-tags'), [
-            'query' => $queryParams
-        ]);
-
-        return json_decode($response->getBody(), true);
-    }
-
-    /**
      * @param array $params
      * @param int $page
      * @return array
@@ -121,11 +103,12 @@ class Client extends BaseObject implements Api
      * @return array
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceGetByKey
+     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceGetTags
      */
-    public function getResource($key, $queryParams = [])
+    public function fetchTags($key, $queryParams = [])
     {
-        $response = $this->apiClient->request('GET', $this->transformUri('projects/{projectUuid}/resources/{key}', [
+        $params['pageSize'] = $params['pageSize'] ?? $this->pageSize;
+        $response = $this->apiClient->request('GET', $this->transformUri('projects/{projectUuid}/resources-tags', [
             '/{key}/' => $key
         ]), ['query' => $queryParams]);
 
@@ -138,11 +121,11 @@ class Client extends BaseObject implements Api
      * @return array
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceGetTags
+     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceGetByKey
      */
-    public function getResourceTags($key, $queryParams = [])
+    public function getResource($key, $queryParams = [])
     {
-        $response = $this->apiClient->request('GET', $this->transformUri('projects/{projectUuid}/resources-tags', [
+        $response = $this->apiClient->request('GET', $this->transformUri('projects/{projectUuid}/resources/{key}', [
             '/{key}/' => $key
         ]), ['query' => $queryParams]);
 

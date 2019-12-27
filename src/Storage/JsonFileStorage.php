@@ -111,7 +111,7 @@ class JsonFileStorage implements TranslationStorage
      *
      * @throws \Exception
      */
-    public function find(string $key, string $lang): ?string
+    public function find(string $key, string $lang, string $group): ?string
     {
         throw new \Exception('Unsupported method. Use Yii::t() instead');
     }
