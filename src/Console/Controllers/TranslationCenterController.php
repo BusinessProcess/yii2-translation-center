@@ -12,7 +12,10 @@
 
 namespace Kialex\TranslateCenter\Console\Controllers;
 
+use Elasticsearch\ClientBuilder;
 use Kialex\TranslateCenter\{Client, Console\Tracker\PullProgressTracker, Storage\JsonFileStorage};
+use Translate\StorageManager\Contracts\TranslationStorage;
+use Translate\StorageManager\Storage\ElasticStorage;
 use Translate\StorageManager\Manager;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -26,8 +29,8 @@ class TranslationCenterController extends Controller
      */
     const LANG_CODE = [
         'ru' => 'ru', // It is primary language!! Put your primary language first!!
-        'de' => 'de', 'en' => 'en', 'es' => 'es', 'gr' => 'el', 'il' => 'he', 'it' => 'it', 'lt' => 'lt', 'mn' => 'mn',
-        'pl' => 'pl', 'ar' => 'ar', 'sr' => 'sr', 'ua' => 'uk', 'zh' => 'zh', 'tr' => 'tr'
+        'de' => 'de', 'en' => 'en', 'es' => 'es', 'el' => 'el', 'he' => 'he', 'it' => 'it', 'lt' => 'lt', 'mn' => 'mn',
+        'pl' => 'pl', 'ar' => 'ar', 'sr' => 'sr', 'uk' => 'uk', 'zh' => 'zh', 'tr' => 'tr'
     ];
 
     public $staticSources = ['static_1', 'static_2', 'static_3'];
@@ -42,7 +45,7 @@ class TranslationCenterController extends Controller
      */
     public function actionPullStaticSources()
     {
-        return $this->pull($this->staticSources);
+        return $this->pull($this->staticSources, Yii::createObject(JsonFileStorage::class));
     }
 
     /**
@@ -54,21 +57,20 @@ class TranslationCenterController extends Controller
      */
     public function actionPullDynamicSources()
     {
-        return $this->pull($this->dynamicSources);
+        return $this->pull($this->dynamicSources, Yii::createObject(ElasticStorage::class));
     }
 
     /**
      * @param string[] $groups
+     * @param TranslationStorage $storage
+     *
      * @return int
      * @throws InvalidConfigException
      * @throws \Translate\StorageManager\Response\Exception
      */
-    protected function pull($groups)
+    protected function pull($groups, TranslationStorage $storage)
     {
-        $manager = new Manager(
-            Yii::createObject(Client::class),
-            Yii::createObject(JsonFileStorage::class)
-        );
+        $manager = new Manager(Yii::createObject(Client::class), $storage);
 
         try {
             foreach ($groups as $group) {

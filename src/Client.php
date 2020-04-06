@@ -21,6 +21,9 @@ use yii\base\{BaseObject};
  */
 class Client extends BaseObject implements Api
 {
+    const PRODUCTION_URL = 'https://translate.center/api/v1/';
+    const DEV_URL = 'http://dev-api.translate.center/api/v1/';
+
     /**
      * @var string Translate Center login
      */
@@ -35,6 +38,11 @@ class Client extends BaseObject implements Api
      * @var string Translate Center project ID
      */
     public $projectUuid;
+
+    /**
+     * @var bool disable/enable production mode
+     */
+    public $production = false;
 
     /**
      * @var int Default size for fetching resources
@@ -55,7 +63,8 @@ class Client extends BaseObject implements Api
 
         $this->apiClient = new ApiClient([
             'login' => $this->login,
-            'password' => $this->password
+            'password' => $this->password,
+            'api' => $this->production ? self::PRODUCTION_URL : self::DEV_URL
         ], new ArrayStorage());
         $this->apiClient->setAlias('projectUuid', $this->projectUuid);
     }
