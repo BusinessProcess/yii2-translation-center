@@ -21,8 +21,8 @@ use yii\base\{BaseObject};
  */
 class Client extends BaseObject implements Api
 {
-    const PRODUCTION_URL = 'https://translate.center/api/v1/';
-    const DEV_URL = 'http://dev-api.translate.center/api/v1/';
+    const PRODUCTION_URL = 'https://api.translate.center/api/v1/';
+    const DEV_URL = 'https://dev-api.translate.center/api/v1/';
 
     /**
      * @var string Translate Center login
