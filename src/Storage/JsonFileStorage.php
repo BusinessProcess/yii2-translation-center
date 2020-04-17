@@ -50,7 +50,7 @@ class JsonFileStorage implements TranslationStorage
         if ($handle = @fopen($file, 'r+b')) {
             fseek($handle, -2, SEEK_END);
             fwrite($handle, ',' . PHP_EOL . '    ');
-            fwrite($handle, '"' . $key . '": ' . '"' . addcslashes($value, '"\'\\') . '"');
+            fwrite($handle, '"' . $key . '": ' . '"' . addcslashes(preg_replace('/\s+/', ' ',$value), '"\\') . '"');
             fwrite($handle, PHP_EOL . '}');
         } else {
             $handle = fopen($file, 'w+b');
