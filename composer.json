@@ -15,7 +15,7 @@
     "prefer-stable": true,
     "require": {
         "pervozdanniy/translation-storage": "^1.0.4",
-        "pervozdanniy/translation-client": "^1.0.0",
+        "pervozdanniy/translation-client": "^2.0.0",
         "cedx/yii2-json-messages": "^5.0"
     },
     "autoload": {
