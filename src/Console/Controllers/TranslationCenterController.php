@@ -12,11 +12,11 @@
 
 namespace Kialex\TranslateCenter\Console\Controllers;
 
-use Elasticsearch\ClientBuilder;
 use Kialex\TranslateCenter\{Client, Console\Tracker\PullProgressTracker, Storage\JsonFileStorage};
+use Kialex\TranslateCenter\ParcerTranslateStorage;
 use Translate\StorageManager\Contracts\TranslationStorage;
-use Translate\StorageManager\Storage\ElasticStorage;
 use Translate\StorageManager\Manager;
+use Translate\StorageManager\Storage\ElasticStorage;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\console\{Controller, ExitCode};
@@ -49,18 +49,6 @@ class TranslationCenterController extends Controller
     }
 
     /**
-     * Pull all dynamic content from Translation Center
-     *
-     * @return int
-     * @throws InvalidConfigException
-     * @throws \Translate\StorageManager\Response\Exception
-     */
-    public function actionPullDynamicSources()
-    {
-        return $this->pull($this->dynamicSources, Yii::createObject(ElasticStorage::class));
-    }
-
-    /**
      * @param string[] $groups
      * @param TranslationStorage $storage
      *
@@ -70,7 +58,7 @@ class TranslationCenterController extends Controller
      */
     protected function pull($groups, TranslationStorage $storage)
     {
-        $manager = new Manager(Yii::createObject(Client::class), $storage);
+        $manager = new Manager(Yii::createObject(Client::class), $storage, new ParcerTranslateStorage());
 
         try {
             foreach ($groups as $group) {
@@ -84,5 +72,17 @@ class TranslationCenterController extends Controller
         }
 
         return ExitCode::OK;
+    }
+
+    /**
+     * Pull all dynamic content from Translation Center
+     *
+     * @return int
+     * @throws InvalidConfigException
+     * @throws \Translate\StorageManager\Response\Exception
+     */
+    public function actionPullDynamicSources()
+    {
+        return $this->pull($this->dynamicSources, Yii::createObject(ElasticStorage::class));
     }
 }
