@@ -23,7 +23,7 @@ require 'vendor/autoload.php';
 Client configuration ( if you use advanced template )
 ```
 /app/common/config/main.php
-...
+...php
 'container' => [
         'singletons' => [
             'Kialex\TranslateCenter\Client' => [
@@ -48,12 +48,12 @@ $translateCenter->createResource([
     [
         'key' => 'someKey',
         'value' => 'someValue',
-        'tags' => ['someGroup1']
+        'tags' => ['category1', 'category2']
     ],
     [
         'key' => 'someKey1',
         'value' => 'someValue1',
-        'tags' => ['someGroup1']
+        'tags' => ['category3', 'category4']
     ]
 ], 'ru');
 // Fetch 1st page resources (default 300 sources) with langs `ru`, `en` and `someGroup1` tag
@@ -63,16 +63,18 @@ $translateCenter->fetch([
 ], 1);
 ```
 
-You can mapping console controller to pushing/creating resources ( if you use advanced template )
+You can mapping console controller to pulling translations ( if you use advanced template )
 ```
 /app/console/config/main.php
 ...
 'controllerMap' => [
         ...
         'translate-center' => [
-            'class' => 'Kialex\TranslateCenter\Console\Controllers\TranslationCenterController',
-            'staticSources' => ['group1', 'group2', 'group3'],
-            'dynamicSources' => ['group4', 'group5', 'group6']
+            'class' => '\Kialex\TranslateCenter\Console\Controllers\TranslationCenterController',
+            'staticGroups' => ['app', 'app_js', 'app_email'],
+            'dynamicGroups' => ['db_product', 'db_product_category'],
+            'staticStorageClass' => \Kialex\TranslateCenter\Storage\JsonFileStorage,
+            'dynamicStorageClass' => \Translate\StorageManager\Storage\ElasticStorage,
           ],
     ],
 ...
@@ -81,26 +83,86 @@ Attention! This controller uses json storage to keep you transaltion, you should
 ```php
 ...
 'components' => [
-        ...
-        'i18n' => [
-            'translations' => [
-                'app*' => [
-                    'class' => 'yii\i18n\PhpMessageSource', // default Yii transaltion
-                    'fileMap' => [
-                        'app'       => 'app.php',
-                        'app/error' => 'error.php',
-                    ],
-                ],
-                '*' => [
-                    'class' => '\yii\i18n\JsonMessageSource', // Your tranlation fron Translate Center
-                    'basePath' => '@common/messages'
-                    // If you change this path, you shoud change it in// 
-                    // `\Kialex\TranslateCenter\Storage\JsonFileStorage` as well
-                    // You may do it via singletons or defenations in config
+    ...
+    'i18n' => [
+        'translations' => [
+            'app*' => [
+                'class' => 'yii\i18n\PhpMessageSource', // default Yii transaltion
+                'fileMap' => [
+                    'app'       => 'app.php',
+                    'app/error' => 'error.php',
                 ],
             ],
-        ]
+            '*' => [
+                'class' => '\yii\i18n\JsonMessageSource', // Your tranlation fron Translate Center
+                'basePath' => '@common/messages'
+                // If you change this path, you shoud change it in// 
+            // `\Kialex\TranslateCenter\Storage\JsonFileStorage` as well
+                    // You may do it via singletons or defenations in config
+            ],
+        ],
+    ]
+]
 ...
+```
+
+Using Redis as Message Source
+- You need define redis component in your common app config
+```
+/app/common/config/main.php
+'components' => [
+    ...
+    'redis' => [
+        'class' => \yii\redis\Connection::class,
+        'hostname' => 'localhost',
+        'port' => 6359,
+        'database' => 10,
+    ],
+    ...
+]
+```
+If your redis component ID has another name, you should define it:
+```
+/app/common/config/main.php
+'container' => [
+    'singletons' => [
+    ...
+    \Kialex\TranslateCenter\Storage\RedisStorage::class => [
+        'class' => \Kialex\TranslateCenter\Storage\RedisStorage::class,
+        'redis' => 'other_redis_compoennt_id'
+    ],
+    ...
+    ]
+]
+```
+- In the controlle map change storage class to Redis Storage:
+```
+/app/console/config/main.php
+...
+'controllerMap' => [
+        ...
+        'translate-center' => [
+            ...
+            'staticStorageClass' => \Kialex\TranslateCenter\Storage\RedisStorage,
+            ...
+          ],
+    ],
+...
+```
+- Change message source to Redis
+```
+/app/console/config/main.php
+'components' => [
+    ...
+    'i18n' => [
+        'translations' => [
+            ...
+            '*' => ['class' => '\Kialex\TranslateCenter\Source\RedisSource'],
+            ...
+        ],
+    ]
+    ...
+]
 ```
 
 Fetching static resources to default Yii 2 translations:

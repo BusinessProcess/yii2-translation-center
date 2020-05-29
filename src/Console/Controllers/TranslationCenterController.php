@@ -12,7 +12,7 @@
 
 namespace Kialex\TranslateCenter\Console\Controllers;
 
-use Kialex\TranslateCenter\{Client, Console\Tracker\PullProgressTracker, Storage\JsonFileStorage, Storage\RedisStorage};
+use Kialex\TranslateCenter\{Client, Console\Tracker\PullProgressTracker, Storage\JsonFileStorage};
 use Kialex\TranslateCenter\ParcerTranslateStorage;
 use Translate\StorageManager\Contracts\TranslationStorage;
 use Translate\StorageManager\Manager;
@@ -25,16 +25,33 @@ use yii\helpers\Console;
 class TranslationCenterController extends Controller
 {
     /**
-     * List of lang code where is localy code and value is code in Translation Center
+     * @var array list of lang code where is localy code and value is code in Translation Center
      */
-    const LANG_CODE = [
-        'ru' => 'ru', // It is primary language!! Put your primary language first!!
+    public $langCodes = [
+        'ru' => 'ru',
         'de' => 'de', 'en' => 'en', 'es' => 'es', 'el' => 'el', 'he' => 'he', 'it' => 'it', 'lt' => 'lt', 'mn' => 'mn',
         'pl' => 'pl', 'ar' => 'ar', 'sr' => 'sr', 'uk' => 'uk', 'zh' => 'zh', 'tr' => 'tr'
     ];
 
-    public $staticSources = ['static_1', 'static_2', 'static_3'];
-    public $dynamicSources = ['dynamic_1', 'dynamic_2', 'dynamic_3'];
+    /**
+     * @var array list of static groups to update.
+     */
+    public $staticGroups = [];
+
+    /**
+     * @var array list of dynamic groups to update.
+     */
+    public $dynamicGroups = [];
+
+    /**
+     * @var string Translation storage class to update static sources.
+     */
+    public $staticStorageClass = JsonFileStorage::class;
+
+    /**
+     * @var string Translation storage class to update dynamic sources.
+     */
+    public $dynamicStorageClass = ElasticStorage::class;
 
     /**
      * Pull all static content from Translation Center
@@ -45,7 +62,19 @@ class TranslationCenterController extends Controller
      */
     public function actionPullStaticSources()
     {
-        return $this->pull($this->staticSources, Yii::createObject(RedisStorage::class));
+        return $this->pull($this->staticGroups, Yii::createObject($this->staticStorageClass));
+    }
+
+    /**
+     * Pull all dynamic content from Translation Center
+     *
+     * @return int
+     * @throws InvalidConfigException
+     * @throws \Translate\StorageManager\Response\Exception
+     */
+    public function actionPullDynamicSources()
+    {
+        return $this->pull($this->dynamicGroups, Yii::createObject($this->dynamicStorageClass));
     }
 
     /**
@@ -64,7 +93,7 @@ class TranslationCenterController extends Controller
             foreach ($groups as $group) {
                 $manager
                     ->setTracker(new PullProgressTracker())
-                    ->updateGroup($group, array_values(self::LANG_CODE));
+                    ->updateGroup($group, array_values($this->langCodes));
             }
         } catch (\Exception $e) {
             Console::endProgress('Fail: ' . $e->getMessage() . PHP_EOL);
@@ -72,17 +101,5 @@ class TranslationCenterController extends Controller
         }
 
         return ExitCode::OK;
-    }
-
-    /**
-     * Pull all dynamic content from Translation Center
-     *
-     * @return int
-     * @throws InvalidConfigException
-     * @throws \Translate\StorageManager\Response\Exception
-     */
-    public function actionPullDynamicSources()
-    {
-        return $this->pull($this->dynamicSources, Yii::createObject(ElasticStorage::class));
     }
 }
