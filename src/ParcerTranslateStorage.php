@@ -2,7 +2,7 @@
 
 namespace Kialex\TranslateCenter;
 
-use Translate\StorageManager\Response\Parser;
+use Pervozdanniy\TranslationStorage\Response\Parser;
 
 class ParcerTranslateStorage extends Parser
 {

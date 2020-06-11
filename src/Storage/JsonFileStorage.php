@@ -12,7 +12,7 @@
 
 namespace Kialex\TranslateCenter\Storage;
 
-use Translate\StorageManager\Contracts\TranslationStorage;
+use Pervozdanniy\TranslationStorage\Contracts\Storage\StaticStorage as TranslationStorage;
 use yii\helpers\FileHelper;
 use yii\i18n\JsonMessageSource;
 use Yii;

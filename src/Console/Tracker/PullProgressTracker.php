@@ -12,7 +12,7 @@
 
 namespace Kialex\TranslateCenter\Console\Tracker;
 
-use Translate\StorageManager\Contracts\ProgressTracker;
+use Pervozdanniy\TranslationStorage\Contracts\ProgressTracker;
 use yii\helpers\Console;
 
 class PullProgressTracker implements ProgressTracker

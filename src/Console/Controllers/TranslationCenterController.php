@@ -14,7 +14,9 @@ namespace Kialex\TranslateCenter\Console\Controllers;
 
 use Kialex\TranslateCenter\{Client, Console\Tracker\PullProgressTracker, Storage\JsonFileStorage};
 use Kialex\TranslateCenter\ParcerTranslateStorage;
-use Translate\StorageManager\Contracts\TranslationStorage;
+use Pervozdanniy\TranslationStorage\Manager\DynamicManager;
+use Pervozdanniy\TranslationStorage\Manager\StaticManager;
+use Translate\StorageManager\Contracts\Storage as TranslationStorage;
 use Translate\StorageManager\Manager;
 use Translate\StorageManager\Storage\ElasticStorage;
 use Yii;
@@ -44,16 +46,6 @@ class TranslationCenterController extends Controller
     public $dynamicGroups = [];
 
     /**
-     * @var string Translation storage class to update static sources.
-     */
-    public $staticStorageClass = JsonFileStorage::class;
-
-    /**
-     * @var string Translation storage class to update dynamic sources.
-     */
-    public $dynamicStorageClass = ElasticStorage::class;
-
-    /**
      * Pull all static content from Translation Center
      *
      * @return int
@@ -62,7 +54,7 @@ class TranslationCenterController extends Controller
      */
     public function actionPullStaticSources()
     {
-        return $this->pull($this->staticGroups, Yii::createObject($this->staticStorageClass));
+        return $this->pull($this->staticGroups);
     }
 
     /**
@@ -74,20 +66,21 @@ class TranslationCenterController extends Controller
      */
     public function actionPullDynamicSources()
     {
-        return $this->pull($this->dynamicGroups, Yii::createObject($this->dynamicStorageClass));
+        return $this->pull($this->dynamicGroups, false);
     }
 
     /**
      * @param string[] $groups
      * @param TranslationStorage $storage
+     * @param bool $static
      *
      * @return int
      * @throws InvalidConfigException
      * @throws \Translate\StorageManager\Response\Exception
      */
-    protected function pull($groups, TranslationStorage $storage)
+    protected function pull($groups, $static = true)
     {
-        $manager = new Manager(Yii::createObject(Client::class), $storage, new ParcerTranslateStorage());
+        $manager = Yii::createObject($static ? StaticManager::class : DynamicManager::class);
 
         try {
             foreach ($groups as $group) {
@@ -96,6 +89,7 @@ class TranslationCenterController extends Controller
                     ->updateGroup($group, array_values($this->langCodes));
             }
         } catch (\Exception $e) {
+            var_dump($e);
             Console::endProgress('Fail: ' . $e->getMessage() . PHP_EOL);
             return ExitCode::UNSPECIFIED_ERROR;
         }

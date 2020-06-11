@@ -2,8 +2,8 @@
 
 namespace Kialex\TranslateCenter\Storage;
 
-use Translate\StorageManager\Contracts\BulkActions;
-use Translate\StorageManager\Contracts\TranslationStorage;
+use Pervozdanniy\TranslationStorage\Contracts\Bulk as BulkActions;
+use Pervozdanniy\TranslationStorage\Contracts\Storage\StaticStorage as TranslationStorage;
 use yii\base\BaseObject;
 use yii\di\Instance;
 use yii\redis\Connection;

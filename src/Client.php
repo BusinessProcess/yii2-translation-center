@@ -12,7 +12,9 @@
 
 namespace Kialex\TranslateCenter;
 
-use Translate\{ApiClient, Storage\ArrayStorage, StorageManager\Contracts\Api};
+
+use Pervozdanniy\TranslationStorage\Contracts\Api;
+use Translate\{ApiClient, Storage\ArrayStorage};
 use yii\base\{BaseObject};
 
 /**
