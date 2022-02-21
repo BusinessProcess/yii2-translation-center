@@ -14,8 +14,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "pervozdanniy/translation-storage": "^2.1",
-        "pervozdanniy/translation-client": "^2.0",
+        "businessprocess/translation-storage": "2.2.0",
+        "businessprocess/translation-client": "2.1.1",
         "cedx/yii2-json-messages": "^5.0"
     },
     "autoload": {
