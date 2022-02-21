@@ -16,7 +16,7 @@
     "require": {
         "businessprocess/translation-storage": "2.2.0",
         "businessprocess/translation-client": "2.1.1",
-        "cedx/yii2-json-messages": "^5.0"
+        "businessprocess/yii2-json-messages": "1.0.0"
     },
     "autoload": {
         "psr-4": {
