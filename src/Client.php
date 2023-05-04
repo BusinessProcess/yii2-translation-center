@@ -153,18 +153,16 @@ class Client extends BaseObject implements Api
 
     /**
      * @param string $key
-     * @param string $lang
      * @param array $data
      * @return bool
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceUpdateResource
+     * @see http://dev-api.translate.center/api-docs/#/Resource/ResourceUpdateResourcePrimaryInfo
      */
-    public function updateResource($key, $lang, $data)
+    public function updateResource($key, $data)
     {
-        $response = $this->apiClient->request('PUT', $this->transformUri('projects/{projectUuid}/{langCode}/resources/{key}', [
-            '/{key}/' => $key,
-            '/{langCode}/' => $lang
+        $response = $this->apiClient->request('PUT', $this->transformUri('projects/{projectUuid}/resources/{key}', [
+            '/{key}/' => $key
         ]), ['json' => $data]);
 
         return $response->getStatusCode() === 200;
