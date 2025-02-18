@@ -23,8 +23,10 @@ use yii\base\{BaseObject};
  */
 class Client extends BaseObject implements Api
 {
-    const DEFAULT_PRODUCTION_URL = 'https://api.translate.center/api/v1/';
-    const DEFAULT_DEVELOPMENT_URL = 'https://dev-api.translate.center/api/v1/';
+    /**
+     * @var string Translate Center api
+     */
+    public $api;
 
     /**
      * @var string Translate Center login
@@ -40,16 +42,6 @@ class Client extends BaseObject implements Api
      * @var string Translate Center project ID
      */
     public $projectUuid;
-
-    /**
-     * @var string Translate Center production URL
-     */
-    public $productionUrl = null;
-
-    /**
-     * @var string Translate Center development URL
-     */
-    public $developmentUrl = null;
 
     /**
      * @var bool disable/enable production mode
@@ -81,7 +73,7 @@ class Client extends BaseObject implements Api
         $this->apiClient = new ApiClient([
             'login' => $this->login,
             'password' => $this->password,
-            'api' => $this->production ? ($this->productionUrl ? $this->productionUrl : self::DEFAULT_PRODUCTION_URL) : ($this->developmentUrl ? $this->developmentUrl : self::DEFAULT_DEVELOPMENT_URL)
+            'api' => $this->api
         ], new ArrayStorage());
         $this->apiClient->setAlias('projectUuid', $this->projectUuid);
     }
